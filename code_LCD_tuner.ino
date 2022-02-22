@@ -55,9 +55,13 @@ int correctFrequency;//the correct frequency for the string being played
 void setup(){
   
   Serial.begin(9600);
+  
+  //print on message to LCD
   lcd.begin(16, 2);
   lcd.print("Tuner is ON");
   delay(3000);
+  
+  //set note and frequency text on LCD
   lcd.setCursor(0,0);
   lcd.print("Note: ");
   lcd.setCursor(0,1);
@@ -158,8 +162,7 @@ void reset(){//clean out some variables
 }
 
 
-//Determine the correct frequency and light up 
-//the appropriate LED for the string being played 
+//print the current note playing by checking freq. value.  
 void stringCheck(){
   lcd.setCursor(6, 0);
   if(frequency>70&frequency<90){
@@ -188,8 +191,7 @@ void stringCheck(){
   }
 }
 
-//Compare the frequency input to the correct 
-//frequency and light up the appropriate LEDS
+//print current frequency being detected
 void frequencyPrint(){
   lcd.setCursor(11, 1);
   lcd.print(frequency);
