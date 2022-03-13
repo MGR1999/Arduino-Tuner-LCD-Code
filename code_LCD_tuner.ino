@@ -1,6 +1,6 @@
 /*
- * Arduino Tuner LCD code
- * Date: 2/22/22
+ * Arduino Tuner LCD code v.2.0
+ * Date: 3/13/22
  * Author:
  * 
  * Michael Guske, Oregon State Univeristy 
@@ -21,10 +21,10 @@
  * This code is in the public domain. 
 */
 
-#include <LiquidCrystal.h>
+#include <LiquidCrystal_I2C.h>
+#include <Wire.h>
 
-const int rs = 12, en = 11, d4 = 5, d5 = 4, d6 = 3, d7 = 2;
-LiquidCrystal lcd(rs, en, d4, d5, d6, d7);
+
 //data storage variables
 byte newData = 0;
 byte prevData = 0;
@@ -51,21 +51,21 @@ byte ampThreshold = 30;//raise if you have a very noisy signal
 
 //variables for tuning
 int correctFrequency;//the correct frequency for the string being played
+LiquidCrystal_I2C lcd(0x27,16,2);
 
 void setup(){
   
   Serial.begin(9600);
-  
-  //print on message to LCD
-  lcd.begin(16, 2);
+  lcd.init();
+  lcd.backlight();
+
+  lcd.setCursor(2,0);
   lcd.print("Tuner is ON");
   delay(3000);
-  
-  //set note and frequency text on LCD
+  lcd.clear();
   lcd.setCursor(0,0);
-  lcd.print("Note: ");
-  lcd.setCursor(0,1);
-  lcd.print("Frequency: ");
+  lcd.print("  E A D G B E ");
+
  
   
   
@@ -162,40 +162,48 @@ void reset(){//clean out some variables
 }
 
 
-//print the current note playing by checking freq. value.  
+//Determine the correct frequency and print
+//a pointer on the LCD indicating the current note
 void stringCheck(){
-  lcd.setCursor(6, 0);
-  if(frequency>70&frequency<90){
-    lcd.print("E");     
-    correctFrequency = 82.4;
+  
+  if(frequency>78.3&frequency<86.5){
+    klear();
+    lcd.setCursor(2, 1);
+    lcd.print("^"); 
   }
-  if(frequency>100&frequency<120){
-    lcd.print("A");
-    correctFrequency = 110;
+  if(frequency>104.5&frequency<115.5){
+     klear();
+     lcd.setCursor(4, 1);
+     lcd.print("^");
   }
-  if(frequency>135&frequency<155){
-    lcd.print("D");
-    correctFrequency = 146.8;
+  if(frequency>139.5&frequency<154.2){
+    klear();
+    lcd.setCursor(6, 1);
+    lcd.print("^");
   }
-  if(frequency>186&frequency<205){
-    lcd.print("G");
-    correctFrequency = 196;
+  if(frequency>186.2&frequency<205.8){
+    klear();
+    lcd.setCursor(8, 1);
+    lcd.print("^");
   }
-  if(frequency>235&frequency<255){
-    lcd.print("B");
-    correctFrequency = 246.9;
+  if(frequency>234.5&frequency<259.2){
+    klear();
+    lcd.setCursor(10, 1);
+    lcd.print("^");
   }
-  if(frequency>320&frequency<340){
-    lcd.print("E");
-    correctFrequency = 329.6;
+  if(frequency>313.1&frequency<346.1){
+    klear();
+    lcd.setCursor(12, 1);
+    lcd.print("^");
   }
+
 }
 
-//print current frequency being detected
-void frequencyPrint(){
-  lcd.setCursor(11, 1);
-  lcd.print(frequency);
-  
+//Clear the bottom line of the LCD. 
+void klear(){
+  lcd.setCursor(0,1);
+  lcd.print("               ");
+ 
 }
 
 
@@ -206,9 +214,9 @@ void loop(){
   if (checkMaxAmp>ampThreshold){
     frequency = 38462/float(period);//calculate frequency timer rate/period
   }
+ 
   
   stringCheck();
-  frequencyPrint();
   
   delay(100);
  
