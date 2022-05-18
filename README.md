@@ -11,4 +11,4 @@ Micheal Guske
 
 link to Multi-Effects Pedal:
 
-TBA
+https://eecs.oregonstate.edu/project-showcase/projects/?id=A7kTL3hu19lxglPz
